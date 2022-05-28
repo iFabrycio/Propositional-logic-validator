@@ -1,0 +1,8 @@
+body {
+    background-color: #eeeeee;
+}
+.main-card {
+    border: .5px #bbbbbb solid;
+    /* width: 540px; */
+    /* margin-top: 20%; */
+}
