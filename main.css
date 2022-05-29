@@ -18,3 +18,11 @@ body {
     text-align: center;
     padding-top: 0.5%;
 }
+
+.list-group-item {
+    background-color: #eeeeee;
+}
+.list-group-item:nth-child(n+2):hover {
+    background-color: #dddddd;
+    cursor: pointer;
+}

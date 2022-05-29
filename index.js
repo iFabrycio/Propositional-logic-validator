@@ -42,6 +42,11 @@ function concept()
   $('.concept').toggle(500);
 }
 
+function put(text)
+{
+  $('input').val(text);
+}
+
 function appendToInput(append)
 {
   actualPosition = $('#input')[0].selectionStart;
