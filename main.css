@@ -6,3 +6,15 @@ body {
     /* width: 540px; */
     /* margin-top: 20%; */
 }
+.footer {
+    position: absolute;
+    background-color: #00000008;
+    border: .5px solid #bbbbbb;
+    bottom: 0;
+    height: 5%;
+    width: 100%;
+}
+.footer > p {
+    text-align: center;
+    padding-top: 0.5%;
+}
