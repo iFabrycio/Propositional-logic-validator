@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,19 +8,29 @@
     <link href="./main.css" rel="stylesheet">
   </head>
   <body>
-  <div class="container">
+  <div class="container-xxl">
     <div class="row justify-content-center align-items-center" style="height:100vh">
+      <div class="col-4 left-side-queue concept">
+        <div class="h-100 p-4 bg-light border rounded-3">
+          <h3>Conceito de Lógica proposicional</h3>
+          <hr>
+          <small><small>Segundo <a target="_blank" href="https://www.facom.ufu.br/~gustavo/Logica/Apostila_LogicaProposicional.pdf">Prof. Luiz Gustavo A. Martins</a></small></small>
+          <br>
+          <br>
+          <p>A lógica proposicional é a forma mais simples de lógica. Nela os fatos do mundo real são representados por sentenças sem argumentos, chamadas de proposições.</p>
+        </div>
+      </div>
       <div class="col-6 main-queue">
         <div class="card main-card">
           <div class="card-header">
-            <h5>Validador de Lógica proposicional</h5>
+            <h5 style="cursor: pointer;" onclick="concept()">Validador de Lógica proposicional</h5>
           </div>
           <div class="card-body">
             <div class="input-group mb-4">
-              <input id="input" type="text" class="form-control" placeholder="P∧Q→R∨S">
+              <input id="input" type="text" class="form-control" placeholder="P∧Q→R∨S" autofocus onblur="this.focus()" autofocus>
               <button class="btn btn-outline-success" type="button" onclick="validate()" id="button-addon2">Validar!</button>
             </div>
-            <div class="btn-group" role="group" aria-label="Basic example">
+            <div class="btn-group-sm" role="group" aria-label="Basic example">
               <button id="negation" type="button" class="btn btn-primary" value="¬">¬</button>
               <button id="implicates" type="button" class="btn btn-primary" value="→">→</button>
               <button id="bi-implicates" type="button" class="btn btn-primary" value="↔">↔</button>
@@ -34,6 +44,9 @@
       </div>
     </div>
   </div>
+  <footer class="footer">
+    <p>Powered by <a href="https://ifabrycio.github.io">ifabrycio.github.io</a></p>
+  </footer>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
     <script src="./index.js"></script>
