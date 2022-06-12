@@ -1,5 +1,6 @@
 $( document ).ready(function (){
-  $(".concept").hide();
+  $(".truth-table").hide();
+  $(".left-side-queue").hide();
 
   $("#negation").click(function() {
     append = $("#negation").val();
@@ -39,7 +40,7 @@ $( document ).ready(function (){
 
 function concept()
 {
-  $('.concept').toggle(500);
+  $('.left-side-queue').toggle(500);
 }
 
 function put(text)
@@ -53,6 +54,11 @@ function appendToInput(append)
   $('#input').val(($('#input').val()).substring(0, actualPosition) + append + ($('#input').val()).substring(actualPosition));
 }
 
+function textToArray(inputText)
+{
+  return inputText.split('');
+}
+
 function validate()
 {
   inputText = normalizeText($('#input').val());
@@ -62,7 +68,7 @@ function validate()
     return;
   }
 
-  inputArray = inputText.split('');
+  inputArray = textToArray(inputText);
 
   let openPontuation = false;
   let canBePropositional = true;
@@ -116,19 +122,31 @@ function validate()
   }
 
   customMessage('success', '<code>' + inputText + '</code> é uma lógica proposicional válida!');
+  generateTruthTable(inputText);
   return;
 }
 
-function normalizeText(text)
+function normalizeText(text, toComputacional = false)
 {
-  inputText = text.toUpperCase();
-  inputText = inputText.replace(/TRUE/g, '1');
-  inputText = inputText.replace(/FALSE/g, '0');
-  inputText = inputText.replace(/<->/g, '↔');
-  inputText = inputText.replace(/->/g, '→');
-  inputText = inputText.replace(/V/g, '∨');
-  inputText = inputText.replace(/\^/g, '∧');
-  inputText = inputText.replace(/!|~/g, '¬');
+  if (toComputacional) {
+    inputText = text.toUpperCase();
+    inputText = inputText.replace(/1/g, '1');
+    inputText = inputText.replace(/0/g, '0');
+    inputText = inputText.replace(/↔/g, '==');
+    inputText = inputText.replace(/→/g, '==');
+    inputText = inputText.replace(/∨/g, '||');
+    inputText = inputText.replace(/∧/g, '&&');
+    inputText = inputText.replace(/¬/g, '!');
+  } else {
+    inputText = text.toUpperCase();
+    inputText = inputText.replace(/TRUE/g, '1');
+    inputText = inputText.replace(/FALSE/g, '0');
+    inputText = inputText.replace(/<->/g, '↔');
+    inputText = inputText.replace(/->/g, '→');
+    inputText = inputText.replace(/V/g, '∨');
+    inputText = inputText.replace(/\^/g, '∧');
+    inputText = inputText.replace(/!|~/g, '¬');
+  }
 
   return inputText;
 }
@@ -185,3 +203,83 @@ function customMessage(type, message)
       break;
   }
 }
+
+function generateTruthTable(inputText)
+{
+  clearTruthTable();
+
+  $(".left-side-queue").show(500);
+
+  let recognizedText = normalizeText(inputText, true);
+  let recognizedArray = textToArray(recognizedText);
+  let proposicionalsArray = [];
+
+  for (i = 0; i < recognizedArray.length; i++) {
+    if (isPropositional(recognizedArray[i])) {
+      proposicionalsArray.push(recognizedArray[i]);
+    }
+  }
+
+  proposicionalsArray = [...new Set(proposicionalsArray)];
+  createTruthTableHead(proposicionalsArray, inputText);
+
+  var row = [];
+
+  for (var i = (Math.pow(2, proposicionalsArray.length) - 1) ; i >= 0 ; i--) {
+    for (var j = (proposicionalsArray.length - 1) ; j >= 0 ; j--) {
+      row[j] = (i & Math.pow(2,j)) ? 1 : 0
+    }
+    processTruthTableRow(row, proposicionalsArray, inputText);
+  }
+
+}
+
+function processTruthTableRow(row, proposicionalsArray, inputText)
+{
+
+  for (var i = 0; i < proposicionalsArray.length; i++) {
+    const match = new RegExp(`(\\b${proposicionalsArray[i]}\\b)`, 'gi');
+    inputText = inputText.replace(match, row[i]);
+  }
+
+  const result = eval(normalizeText(inputText, true));
+  createTruthTableBody(row, result)
+  // console.log(normalizeText(inputText, true));
+}
+
+function clearTruthTable()
+{
+  $('.truth-table-head-tr').empty();
+  $('.truth-table-body').empty();
+}
+
+function createTruthTableHead(proposicionalsArray, inputText)
+{
+  $(".truth-table").show(500);
+  proposicionalsArray.forEach(propositional => {
+    $('.truth-table-head-tr').append(
+      '<th>' + propositional + '</th>'
+    );
+  });
+
+  $('.truth-table-head-tr').append(
+    '<th>' + inputText + '</th>'
+  );
+}
+
+function createTruthTableBody(row, result)
+{
+  const random = Math.floor(Math.random() * 1000000) + 1;
+  $(".truth-table-body").append('<tr class="truth-table-body-tr-' + random + '"></tr>');
+
+  row.forEach(propositionalValue => {
+    $('.truth-table-body-tr-' + random).append(
+      '<td>' + propositionalValue + '</td>'
+    );
+  });
+
+  $('.truth-table-body-tr-' + random).append(
+    '<th>' + (result == 'true' || result == 1 ? '1' : '0') + '</th>'
+  );
+}
+
