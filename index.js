@@ -180,25 +180,31 @@ function isConective(currentChar, except = false)
 
 function customMessage(type, message)
 {
+  const random = Math.floor(Math.random() * 1000000) + 1;
+
+  if($(".alert")[0] != undefined){
+      $('.alert').fadeOut(500);
+  }
+
   switch(type){
     case 'success': {
-      $('.main-queue').append('<div class="mt-3 alert alert-success">' + message + '</div>');
-      $('.alert').click(function() {
-        $('.alert').fadeOut(500);
+      $('.main-queue').append('<div class="mt-3 alert alert-success ' + random + '">' + message + '<hr><p class="mb-0 fnc"></p><hr><p class="mb-0 fnd"></p></div>');
+      $('.' + random).click(function() {
+        $('.' + random).fadeOut(500);
       });
       break;
     }
     case 'fail': {
-      $('.main-queue').append('<div class="mt-3 alert alert-danger">' + message + '</div>');
-      $('.alert').click(function() {
-        $('.alert').fadeOut(500);
+      $('.main-queue').append('<div class="mt-3 alert alert-danger ' + random + '">' + message + '<hr><p class="mb-0 fnc"></p><hr><p class="mb-0 fnd"></p></div>');
+      $('.' + random).click(function() {
+        $('.' + random).fadeOut(500);
       });
       break;
     }
     default:
-      $('.main-queue').append('<div class="mt-3 alert alert-info">' + message + '</div>');
-      $('.alert').click(function() {
-        $('.alert').fadeOut(500);
+      $('.main-queue').append('<div class="mt-3 alert alert-info ' + random + '">' + message + '<hr><p class="mb-0 fnc"></p><hr><p class="mb-0 fnd"></p></div>');
+      $('.' + random).click(function() {
+        $('.' + random).fadeOut(500);
       });
       break;
   }
@@ -232,6 +238,17 @@ function generateTruthTable(inputText)
     processTruthTableRow(row, proposicionalsArray, inputText);
   }
 
+  fixNormalForms();
+
+}
+
+function fixNormalForms()
+{
+  const fnc_text = ($('.fnc').text()).replace(/\)\(/g, ') ∧ (');
+  const fnd_text = ($('.fnd').text()).replace(/\)\(/g, ') ∨ (');
+
+  $('.fnc').html('<b>Forma Normal Conjuntiva: </b><code>' + fnc_text + '</code>');
+  $('.fnd').html('<b>Forma Normal Disjuntiva: </b><code>' + fnd_text + '</code>');
 }
 
 function processTruthTableRow(row, proposicionalsArray, inputText)
@@ -243,14 +260,86 @@ function processTruthTableRow(row, proposicionalsArray, inputText)
   }
 
   const result = eval(normalizeText(inputText, true));
-  createTruthTableBody(row, result)
-  // console.log(normalizeText(inputText, true));
+  createTruthTableBody(row, result);
+
+  if (result == 'true' || result == 1) {
+    createFND(row, proposicionalsArray, result);
+  } else {
+    createFNC(row, proposicionalsArray, result);
+  }
+}
+
+
+function createFND(row, proposicionalsArray, result)
+{
+  resultString = $('.fnd').val();
+
+  console.log("What is that: " + resultString);
+  if (!resultString ||  resultString == undefined) {
+    resultString += '(';
+  } else {
+    resultString += '∨(';
+  }
+
+  for (var i = 0; i < proposicionalsArray.length; i++) {
+
+    let setAnd = '∧';
+
+    if (i == proposicionalsArray.length - 1) {
+      setAnd = '';
+    }
+
+    if (row[i] == 1) {
+      resultString += proposicionalsArray[i] + setAnd;
+    } else {
+      resultString += '¬' + proposicionalsArray[i] + setAnd;
+    }
+  }
+
+  resultString += ')';
+
+  $('.fnd').append(resultString);
+
+}
+
+
+function createFNC(row, proposicionalsArray, result)
+{
+  resultString = $('.fnc').val();
+
+  if (!resultString ||  resultString == undefined) {
+    resultString += '(';
+  } else {
+    resultString += '∧(';
+  }
+
+  for (var i = 0; i < proposicionalsArray.length; i++) {
+
+    let setOr = '∨';
+
+    if (i == proposicionalsArray.length - 1) {
+      setOr = '';
+    }
+
+    if (row[i] == 1) {
+      resultString += proposicionalsArray[i] + setOr;
+    } else {
+      resultString += '¬' + proposicionalsArray[i] + setOr;
+    }
+  }
+
+  resultString += ')';
+
+  $('.fnc').append(resultString);
+
 }
 
 function clearTruthTable()
 {
   $('.truth-table-head-tr').empty();
   $('.truth-table-body').empty();
+  $('.fnc').empty();
+  $('.fnd').empty();
 }
 
 function createTruthTableHead(proposicionalsArray, inputText)
